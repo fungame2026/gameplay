@@ -3,9 +3,9 @@
 ARG=$1
 
 if [ "$ARG" = "--help" ] || [ "$ARG" = "-help" ]; then
-    npx ts-node -r tsconfig-paths/register src/main.ts --help
+    npx ts-node -r tsconfig-paths/register --transpile-only src/main.ts --help
 elif [ -z "$ARG" ]; then
-    npx ts-node -r tsconfig-paths/register src/main.ts
+    npx ts-node -r tsconfig-paths/register --transpile-only src/main.ts
 else
-    npx ts-node -r tsconfig-paths/register src/main.ts "$ARG"
+    npx ts-node -r tsconfig-paths/register --transpile-only src/main.ts "$ARG"
 fi
