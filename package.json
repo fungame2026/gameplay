@@ -1,9 +1,9 @@
 {
-  "name": "WILD",
+  "name": "wild",
   "version": "0.29.0",
   "description": "An open-source 2D multiplayer online extraction game.",
   "scripts": {
-    "build": "cd common && npx tsc",
+    "build": "pnpm -r build",
     "dev": "pnpm -r dev",
     "dev:aiplayer": "cd ai-player && pnpm dev:main",
     "typecheck": "tsc -v --noEmit",
