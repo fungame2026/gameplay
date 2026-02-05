@@ -40,7 +40,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "c4": 2,
             "confetti_grenade": 5,
             "sm56": 2,
-            "gold": 10
+            "gold": 10000
         },
         noDrop: true
     },
@@ -70,7 +70,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "c4": 4,
             "confetti_grenade": 9,
             "sm56": 4,
-            "gold": 10
+            "gold": 10000
         },
         defaultTint: 0xeeeeee
     },
@@ -100,7 +100,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "c4": 6,
             "confetti_grenade": 12,
             "sm56": 6,
-            "gold": 10
+            "gold": 10000
         },
         defaultTint: 0x63754b
     },
@@ -130,7 +130,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "c4": 8,
             "confetti_grenade": 16,
             "sm56": 8,
-            "gold": 10
+            "gold": 10000
         },
         defaultTint: 0x3f3f3f
     },
@@ -160,7 +160,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "c4": 8,
             "confetti_grenade": 16,
             "sm56": 8,
-            "gold": 10
+            "gold": 10000
         },
         noTint: true,
         perk: PerkIds.HollowPoints,

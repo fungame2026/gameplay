@@ -1,0 +1,10 @@
+packages:
+  - common/
+  - ai-player/
+  - '!**dist/**'
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
+  - esbuild
+  - skia-canvas
+  - unrs-resolver

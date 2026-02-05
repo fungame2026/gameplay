@@ -1,0 +1,26 @@
+{
+  "name": "@sowild/wild-ai-player",
+  "version": "1.0.0",
+  "description": "AI Player for WILD 2D Extraction Game",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "start": "ts-node -r tsconfig-paths/register --transpile-only src/main.ts",
+    "dev": "ts-node -r tsconfig-paths/register --transpile-only src/main.ts dev",
+    "dev:main": "ts-node -r tsconfig-paths/register --transpile-only src/main.ts dev"
+  },
+  "dependencies": {
+    "@types/ws": "^8.5.5",
+    "lotto-draw": "^1.0.2",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.13.5",
+    "@swc/helpers": "^0.5.17",
+    "@types/node": "^22.18.1",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.2"
+  }
+}

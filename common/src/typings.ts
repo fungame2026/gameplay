@@ -73,15 +73,6 @@ export type CustomTeamMessage =
         type: CustomTeamMessages.Start | CustomTeamMessages.Started
     };
 
-export interface UserProfile {
-    id: string
-    username: string
-    balance: number
-    skins: string[]
-    badges: string[]
-    role?: string
-}
-
 export interface JWTPayload {
     userId: string
     username: string

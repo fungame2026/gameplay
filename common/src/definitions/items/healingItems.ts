@@ -81,6 +81,7 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
         defType: DefinitionType.HealingItem,
         healType: HealType.Special,
         restoreAmount: 0,
-        useTime: 5
+        useTime: 5,
+        hideUnlessPresent: true
     }
 ]);

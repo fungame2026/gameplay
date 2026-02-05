@@ -1,0 +1,10 @@
+export { GameObject } from "./gameObject";
+export { Player } from "./player";
+export { Obstacle } from "./obstacle";
+export { DeathMarker } from "./deathMarker";
+export { Loot } from "./loot";
+export { Building } from "./building";
+export { Parachute } from "./parachute";
+export { Projectile } from "./projectile";
+export { Decal } from "./decal";
+export { SyncedParticle } from "./syncedParticle";

@@ -1,0 +1,35 @@
+{
+  "name": "WILD",
+  "version": "0.29.0",
+  "description": "An open-source 2D multiplayer online extraction game.",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r dev",
+    "dev:aiplayer": "cd ai-player && pnpm dev:main",
+    "typecheck": "tsc -v --noEmit",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "lint:ci": "eslint . --max-warnings 0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.5.0"
+  },
+  "keywords": [
+    "nodejs",
+    "typescript",
+    "battle-royale",
+    "io-game",
+    "pixijs"
+  ],
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@stylistic/eslint-plugin": "^4.4.1",
+    "@types/node": "^22.18.1",
+    "eslint": "^9.35.0",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.43.0"
+  },
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
+}
