@@ -153,10 +153,9 @@ export default defineConfig(
     },
     {
         ignores: [
+            "ai-player/src/**",
             "common/dist/**",
-            "client/dist/**",
-            "server/dist/**",
-            "tests/dist/**"
+            "ai-player/dist/**"
         ]
     }
 );

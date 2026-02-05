@@ -1,8 +1,7 @@
 {
   "extends": [
-    "./client/tsconfig.node.json",
     "./common/tsconfig.json",
-    "./server/tsconfig.json"
+    "./ai-player/tsconfig.json",
   ],
   "include": [
     "package.json"

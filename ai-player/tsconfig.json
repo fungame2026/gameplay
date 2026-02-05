@@ -5,6 +5,7 @@
     "module": "CommonJS",
     "moduleResolution": "Node",
     "outDir": "./dist",
+    "rootDir": "..",
     "skipLibCheck": true,
     "strictNullChecks": true,
     "strict": true,

@@ -1,9 +1,9 @@
-import { type MapData } from "../../common/src/packets/mapPacket";
-import { type Vector } from "../../common/src/utils/vector";
-import { RectangleHitbox } from "../../common/src/utils/hitbox";
-import { Collision, Numeric } from "../../common/src/utils/math";
-import { Terrain, River } from "../../common/src/utils/terrain";
-import { Vec } from "../../common/src/utils/vector";
+import { type MapData } from "@common/packets/mapPacket";
+import { type Vector } from "@common/utils/vector";
+import { RectangleHitbox } from "@common/utils/hitbox";
+import { Collision, Numeric } from "@common/utils/math";
+import { Terrain, River } from "@common/utils/terrain";
+import { Vec } from "@common/utils/vector";
 
 export class MapManagerClass {
     private _position = Vec(0, 0);

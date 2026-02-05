@@ -16,15 +16,7 @@
   },
   "include": [
     "common/src/**/*.ts",
-    "client/src/**/*.ts",
-    "client/editor/src/**/*.ts",
-    "client/news/src/**/*.ts",
-    "client/vite/*.ts",
-    "client/vite.config.ts",
-    "client/postcss.config.js",
-    "client/svelte.config.js",
-    "server/src/**/*.ts",
-    "tests/src/**/*.ts",
+    "ai-player/src/**/*.ts",
     "eslint.config.mjs"
   ]
 }
