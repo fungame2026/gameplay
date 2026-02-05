@@ -5,23 +5,16 @@
     "module": "CommonJS",
     "moduleResolution": "Node",
     "outDir": "./dist",
-    "composite": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
     "strict": true,
     "paths": {
       "@common/*": ["../common/src/*"]
-    },
-    "rootDir": "./src"
+    }
   },
   "exclude": ["node_modules"],
-  "include": ["src/**/*", "../common/src/",],
+  "include": ["src/**/*", "../common/src/"],
   "ts-node": {
     "swc": true
-  },
-  "references": [
-    {
-      "path": "../common"
-    }
-  ]
+  }
 }

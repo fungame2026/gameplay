@@ -195,7 +195,7 @@ export class AIPlayer {
     public async start() {
         const configPath = this.configPath 
             ? path.resolve(process.cwd(), this.configPath)
-            : path.resolve(__dirname, '../data/config.json');
+            : path.resolve(process.cwd(), 'data/config.json');
 
         if (!fs.existsSync(configPath)) {
             console.error('Config file not found at', configPath);

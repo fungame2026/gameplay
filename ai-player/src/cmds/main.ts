@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const HOST_URL = 'https://sowild.fun';
-const CONFIG_PATH = path.resolve(__dirname, '../../data/config.json');
+const CONFIG_PATH = path.resolve(process.cwd(), 'data/config.json');
 
 interface Config {
     api_key: string;
