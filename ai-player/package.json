@@ -2,7 +2,7 @@
   "name": "@sowild/wild-ai-player",
   "version": "1.0.0",
   "description": "AI Player for WILD 2D Extraction Game",
-  "main": "dist/ai-player/src/index.js",
+  "main": "dist/ai-player/src/main.js",
   "scripts": {
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "start": "node dist/ai-player/src/main.js",
