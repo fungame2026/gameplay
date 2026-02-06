@@ -1,9 +1,12 @@
 import { AIPlayer } from "../AIPlayer";
 import { Desire } from "../typed";
 import { Projectile } from "../objects/projectile";
+import { Building } from "../objects/building";
 import { Explosions } from "@common/definitions/explosions";
 import { Geometry } from "@common/utils/math";
 import { GasManager } from "../gasManager";
+import { ObjectCategory } from "@common/constants";
+import { MIN_GOLD_FOR_EVACUATION } from "../constant";
 
 export class DesireManager {
     constructor(private ai: AIPlayer) {}
@@ -71,6 +74,49 @@ export class DesireManager {
                 priority: 1,
                 creationTime: now
             });
+        }
+
+        // 1.5 Winner Gate Logic (Evacuation or Avoidance)
+        const goldCount = this.ai.getGoldCount();
+        for (const obj of this.ai.objects) {
+            if (obj.type === ObjectCategory.Building) {
+                const building = obj as Building;
+                if (building.definition.idString === "winner_gate") {
+                    const dist = Geometry.distance(this.ai.playerPosition, building.position);
+                    if (goldCount < MIN_GOLD_FOR_EVACUATION) {
+                        // Avoid winner gate if too close
+                        if (dist < 25) {
+                            const dx = this.ai.playerPosition.x - building.position.x;
+                            const dy = this.ai.playerPosition.y - building.position.y;
+                            const angle = Math.atan2(dy, dx);
+                            const escapeTarget = {
+                                x: building.position.x + Math.cos(angle) * 40,
+                                y: building.position.y + Math.sin(angle) * 40
+                            };
+                            this.addDesire({
+                                type: 'moveToLocation',
+                                targetName: 'AvoidWinnerGate',
+                                targetPosition: escapeTarget,
+                                isResolved: false,
+                                status: 'pending',
+                                priority: 0.2, // High priority, just below Gas/Grenades
+                                creationTime: now
+                            });
+                        }
+                    } else {
+                        // Move to winner gate to evacuate if gold is enough
+                        this.addDesire({
+                            type: 'moveToLocation',
+                            targetName: 'Evacuate',
+                            targetPosition: building.position,
+                            isResolved: false,
+                            status: 'pending',
+                            priority: 0.5,
+                            creationTime: now
+                        });
+                    }
+                }
+            }
         }
         
         // 2. Healing (High Priority if low health)

@@ -9,6 +9,7 @@ import { Geometry } from "@common/utils/math";
 import { GasManager } from "./gasManager";
 import { ObjectPool } from "@common/utils/objectPool";
 import { Player } from "./objects/player";
+import { Building } from "./objects/building";
 import { DefinitionType } from "@common/utils/objectDefinitions";
 import { delay } from "./utility";
 import { LootManager } from "./managers/LootManager";
@@ -16,6 +17,8 @@ import { NetworkManager } from "./managers/NetworkManager";
 import { CombatManager } from "./managers/CombatManager";
 import { DesireManager } from "./managers/DesireManager";
 import { Desire, ObjectMapping } from "./typed";
+import { MIN_GOLD_FOR_EVACUATION } from "./constant";
+import { ObjectCategory } from "@common/constants";
 
 export class AIPlayer {
     public playerName: string;
@@ -58,6 +61,12 @@ export class AIPlayer {
     private postDropCooldownUntil = 0;
     private lastTargetSetTime: number = 0;
 
+    // Network Sync for Movement
+    public lastMoveTimestamp: number = 0;
+    public lastPlayerPositionUpdateTs: number = 0;
+    public lastInputWasEmpty: boolean = false;
+    public lastInteractLootTimestamp: number | undefined;
+
     // Stuck Detection
     private lastPosition: Vector | null = null;
     private lastPositionCheckTime: number = 0;
@@ -85,6 +94,10 @@ export class AIPlayer {
         return this.inventory;
     }
 
+    public getGoldCount(): number {
+        return this.inventoryItems?.items?.["gold"] || 0;
+    }
+
     private _lastUpdateTime = 0;
     get lastUpdateTime(): number { return this._lastUpdateTime; }
     public setLastUpdateTime(value: number): void { this._lastUpdateTime = value; }
@@ -98,6 +111,13 @@ export class AIPlayer {
      */
     get serverDt(): number { return this._serverDt; }
     public setServerDt(value: number): void { this._serverDt = value; }
+
+    public lastServerTime: number | undefined;
+
+    public get serverTime(): number {
+        if (this.lastServerTime === undefined) return Date.now();
+        return this.lastServerTime + (Date.now() - this.lastUpdateTime);
+    }
 
     // Index signature to satisfy the Agent interface
     [propertyName: string]: any;
@@ -529,6 +549,19 @@ export class AIPlayer {
              if (minVisitDist < 60) score -= 3000;
              else if (minVisitDist < 120) score -= 1000;
 
+             // Repulsion from winner gate if gold is low
+             if (this.getGoldCount() < MIN_GOLD_FOR_EVACUATION) {
+                for (const obj of this.objects) {
+                    if (obj.type === ObjectCategory.Building) {
+                        const b = obj as Building;
+                        if (b.definition.idString === "winner_gate") {
+                            const d = Geometry.distance(pos, b.position);
+                            if (d < 40) score -= 5000;
+                        }
+                    }
+                }
+             }
+
              if (score > bestScore) {
                  bestScore = score;
                  bestPos = pos;
@@ -557,6 +590,25 @@ export class AIPlayer {
 
     // --- End New Methods ---
     public sendPacket(packet: PacketDataIn): void {
+        if (packet.type === 2) { // PacketType.Input
+            const data = packet as any;
+            const isMoving = data.movement && (data.movement.up || data.movement.down || data.movement.left || data.movement.right);
+            const hasActions = data.actions && data.actions.length > 0;
+            const isEmpty = !isMoving && !hasActions && !data.attacking;
+
+            if (isEmpty) {
+                if (this.lastInputWasEmpty) {
+                    return; // Skip redundant empty packet
+                }
+                this.lastInputWasEmpty = true;
+            } else {
+                this.lastInputWasEmpty = false;
+            }
+
+            if (isMoving) {
+                this.lastMoveTimestamp = this.serverTime;
+            }
+        }
         this.networkManager.sendPacket(packet);
     }
 

@@ -20,6 +20,9 @@ export class LootManager {
     constructor(private ai: AIPlayer) {}
 
     public scanForLoots(): Desire[] {
+        if (this.ai.lastInteractLootTimestamp !== undefined && this.ai.lastServerTime !== undefined && this.ai.lastServerTime <= this.ai.lastInteractLootTimestamp) {
+            return [];
+        }
         const results: Desire[] = [];
         const nearbyLoots = this.findNearbyLoots();
         
@@ -28,7 +31,7 @@ export class LootManager {
         const hasPendingDesire = (id: number) => this.ai.desires.some(d => d.targetId === id && !d.isResolved);
         
         const now = Date.now();
-        this.ai.droppedItems = this.ai.droppedItems.filter(d => now - d.timestamp < 30000);
+        this.ai.droppedItems = this.ai.droppedItems.filter(d => now - d.timestamp < 50000);
 
         const expectAmmoTypes = new Set<string>();
         for (const item of nearbyLoots) {
@@ -628,20 +631,32 @@ export class LootManager {
             }
         }
 
-        //wait player position refresh
-        //await delay(1000);
         const dist = Geometry.distance(this.ai.playerPosition, desire.targetPosition);
         const dx = desire.targetPosition.x - this.ai.playerPosition.x;
         const dy = desire.targetPosition.y - this.ai.playerPosition.y;
         const angle = Math.atan2(dy, dx);
         
-        const interactionRange = 1.0;
+        const interactionRange = 2.5;
         const movement = {
             up: Math.abs(dy) > interactionRange && dy < 0,
             down: Math.abs(dy) > interactionRange && dy > 0,
             left: Math.abs(dx) > interactionRange && dx < 0,
             right: Math.abs(dx) > interactionRange && dx > 0
         };
+
+        // Lock-step movement optimization:
+        // When close to the target, we must ensure we don't send overlapping move commands.
+        if (dist < 20.0) {
+            // If we have a pending move that hasn't been reflected in a position update,
+            // we force the current movement to false (Stop).
+            if (this.ai.lastPlayerPositionUpdateTs < this.ai.lastMoveTimestamp) {
+                movement.up = false;
+                movement.down = false;
+                movement.left = false;
+                movement.right = false;
+            }
+        }
+
         this.ai.constrainMovement(movement);
         
         let actions = [];
@@ -685,6 +700,17 @@ export class LootManager {
             isMobile: false
         });
         this.ai.sendPacket(inputPacket);
+
+        if (isInteractable) {
+            this.ai.lastInteractLootTimestamp = this.ai.lastServerTime;
+            for (let i=0; i < 5; ++i) {
+                if (this.checkDesireCompletion(desire)) {
+                    break;
+                } else {
+                    await delay(100);
+                }
+            }
+        }
 
         if (desire.type === 'pickupGun') {
             const w = this.ai.inventory?.weapons?.[desire.targetSlot!];

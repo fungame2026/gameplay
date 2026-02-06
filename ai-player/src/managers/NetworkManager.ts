@@ -124,10 +124,12 @@ export class NetworkManager {
 
     private handleUpdatePacket(updateData: UpdateDataOut): void {
         const now = Date.now();
-        this.ai.setServerDt(now - this.ai.lastUpdateTime);
+        const playerData = updateData.playerData;
+        const serverTime = (playerData && playerData.timestamp) ?? now;
+        this.ai.setServerDt(serverTime - (this.ai.lastServerTime ?? serverTime));
+        this.ai.lastServerTime = serverTime;
         this.ai.setLastUpdateTime(now);
     
-        const playerData = updateData.playerData;
         if (playerData) {
             if (playerData.teamID !== undefined) {
                 this.ai.teamID = playerData.teamID;
@@ -171,7 +173,7 @@ export class NetworkManager {
                                 this.ai.droppedItems.push({
                                     weaponId: oldWep.definition.idString,
                                     position: { ...this.ai.playerPosition },
-                                    timestamp: now
+                                    timestamp: serverTime
                                 });
                             }
                         }
@@ -252,6 +254,7 @@ export class NetworkManager {
         const player = this.ai.activePlayer;
         if (!player) return;
         this.ai.playerPosition = player.position;
+        this.ai.lastPlayerPositionUpdateTs = serverTime;
         //console.log("agent position updated: ", player.position);
     }
 

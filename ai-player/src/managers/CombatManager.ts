@@ -76,6 +76,17 @@ export class CombatManager {
                 left: Math.abs(teammate.position.x - this.ai.playerPosition.x) > 2.0 && (teammate.position.x < this.ai.playerPosition.x),
                 right: Math.abs(teammate.position.x - this.ai.playerPosition.x) > 2.0 && (teammate.position.x > this.ai.playerPosition.x)
             };
+
+            // Lock-step movement optimization:
+            if (dist < 10.0) {
+                if (this.ai.lastPlayerPositionUpdateTs < this.ai.lastMoveTimestamp) {
+                    movement.up = false;
+                    movement.down = false;
+                    movement.left = false;
+                    movement.right = false;
+                }
+            }
+
             this.ai.constrainMovement(movement);
              const inputPacket = InputPacket.create({
                 movement,
@@ -157,6 +168,17 @@ export class CombatManager {
                             left: Math.abs(dx) > 2.0 && dx < 0,
                             right: Math.abs(dx) > 2.0 && dx > 0
                         };
+
+                        // Lock-step movement optimization:
+                        const dist = Geometry.distance(this.ai.playerPosition, moveDesire.targetPosition);
+                        if (dist < 10.0) {
+                            if (this.ai.lastPlayerPositionUpdateTs < this.ai.lastMoveTimestamp) {
+                                movement.up = false;
+                                movement.down = false;
+                                movement.left = false;
+                                movement.right = false;
+                            }
+                        }
                     } else {
                         // Random movement to avoid being static
                         const t = now / 500;

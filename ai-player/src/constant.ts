@@ -27,3 +27,5 @@ export const Config = {
         },
     }
 } satisfies ConfigType as ConfigType;
+
+export const MIN_GOLD_FOR_EVACUATION = 100;
