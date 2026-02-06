@@ -35,7 +35,8 @@ function serializePlayerData(
         activeC4s,
         perks,
         teamID,
-        blockEmoting
+        blockEmoting,
+        timestamp
     }: PlayerData
 ): void {
     /* eslint-disable @stylistic/no-multi-spaces */
@@ -55,6 +56,7 @@ function serializePlayerData(
     const hasActiveC4s          = activeC4s !== undefined;
     const hasPerks              = perks !== undefined;
     const hasTeamID             = teamID !== undefined;
+    const hasTimestamp          = timestamp !== undefined;
     /* eslint-enable @stylistic/no-multi-spaces */
 
     strm.writeBooleanGroup2(
@@ -76,7 +78,7 @@ function serializePlayerData(
         blockEmoting
     );
 
-    strm.writeBooleanGroup(hasInfection);
+    strm.writeBooleanGroup(hasInfection, hasTimestamp);
 
     strm.writeUint8(pingSeq);
 
@@ -101,6 +103,10 @@ function serializePlayerData(
 
     if (hasInfection) {
         strm.writeFloat(infection, 0, 1, 2);
+    }
+
+    if (hasTimestamp) {
+        strm.writeFloat64(timestamp);
     }
 
     if (hasZoom) {
@@ -288,7 +294,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         blockEmoting
     ] = strm.readBooleanGroup2();
 
-    const [hasInfection] = strm.readBooleanGroup();
+    const [hasInfection, hasTimestamp] = strm.readBooleanGroup();
 
     const data: SDeepMutable<PlayerData> = {
         pingSeq: strm.readUint8(),
@@ -317,6 +323,10 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
 
     if (hasInfection) {
         data.infection = strm.readFloat(0, 1, 2);
+    }
+
+    if (hasTimestamp) {
+        data.timestamp = strm.readFloat64();
     }
 
     if (hasZoom) {
@@ -562,6 +572,7 @@ export interface PlayerData {
     activeC4s?: boolean
     perks?: PerkDefinition[]
     teamID?: number
+    timestamp?: number
 }
 
 export interface UpdateDataCommon {
