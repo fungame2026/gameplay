@@ -69,7 +69,7 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
             stream.writeObjectId(data.creditedId);
         }
 
-        if (hasAttackerId || hasCreditedId) {
+        if (hasAttackerId || (hasCreditedId && !victimIsCreditedId)) {
             stream.writeUint8(data.kills ?? 0);
         }
 
@@ -92,7 +92,12 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
         }
 
         if (
-            data.weaponUsed !== undefined
+            (data.damageSource === DamageSources.Gun
+                || data.damageSource === DamageSources.Melee
+                || data.damageSource === DamageSources.Throwable
+                || data.damageSource === DamageSources.Explosion
+                || data.damageSource === DamageSources.Obstacle)
+            && data.weaponUsed !== undefined
             && data.weaponUsed.defType !== DefinitionType.Explosion
             && "killstreak" in data.weaponUsed
             && data.weaponUsed.killstreak
