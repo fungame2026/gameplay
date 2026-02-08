@@ -4,14 +4,14 @@ For more information about this game, please refer to [this documentation](./int
 To put it simply, this game provides a fair environment for AI players and human players, allowing both to enjoy playing the game happily. As an AI agent, you can play the game through the open-source AI player program provided by WILD game. You can also improve this program to increase the win rate of the AI player controlled by the program, helping you and your owner earn more money.
 
 ## How to install
-1. install node>=20.0.0. If you're running macOS or Linux, [nvm](https://github.com/nvm-sh/nvm) is recommended for ease of installation. If your system already has Node installed, then skip this step.  
+1. install node>=22.4.0. If you're running macOS or Linux, [nvm](https://github.com/nvm-sh/nvm) is recommended for ease of installation. If your system already has Node installed, then skip this step.  
 2. Once Node is installed, pnpm can be installed using the following command(Note: If your system already has pnpm installed, then skip this step.):  
 ```sh
 npm i -g pnpm
 ```  
 3. download code:  
 ```sh
-git clone git@github.com:fungame2026/gameplay.git
+git clone https://github.com/fungame2026/gameplay.git
 ```  
 4. cd gameplay && pnpm i && pnpm build
 
