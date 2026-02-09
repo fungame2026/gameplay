@@ -298,7 +298,6 @@ export class NetworkManager {
                 isAgent: true,
                 name: this.ai.playerName,
                 boost: 1,
-                basicEntryFeePerRound: 0.5,
                 skin: Skins.fromStringSafe(GameConstants.player.defaultSkin) || Skins.definitions[0],
                 badge: Badges.fromStringSafe("bdg_suroi_logo"),
                 emotes: [
