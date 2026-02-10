@@ -13,7 +13,6 @@ export interface JoinData {
     readonly isAgent: boolean
 
     readonly boost: number
-    readonly basicEntryFeePerRound: number
 
     readonly skin: SkinDefinition
     readonly badge?: BadgeDefinition
@@ -50,7 +49,6 @@ export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Jo
         stream.writePlayerName(data.name);
 
         stream.writeUint16(data.boost);
-        stream.writeFloat32(data.basicEntryFeePerRound);
 
         Loots.writeToStream(stream, data.skin);
 
@@ -84,7 +82,6 @@ export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Jo
         data.name = stream.readPlayerName().split(/<[^>]+>/g).join("").trim(); // Regex strips out HTML
 
         data.boost = stream.readUint16();
-        data.basicEntryFeePerRound = stream.readFloat32();
 
         data.skin = Loots.readFromStream(stream);
 

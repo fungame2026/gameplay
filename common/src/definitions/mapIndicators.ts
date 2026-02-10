@@ -11,7 +11,7 @@ export const MapIndicators = new ObjectDefinitions<MapIndicatorDefinition>([
     "juggernaut_indicator",
     "player_indicator",
     "priority_target",
-    "gold_indicator",
+    "gold",
     "winner_gate_indicator"
 ].map(idString => ({
     idString,
