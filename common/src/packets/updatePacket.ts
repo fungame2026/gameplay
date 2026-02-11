@@ -819,7 +819,7 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
             strm.writeArray(data.mapIndicators, indicator => {
                 const { id, positionDirty, definitionDirty, dead, position, definition } = indicator;
 
-                strm.writeUint8(id);
+                strm.writeUint16(id);
                 strm.writeBooleanGroup(
                     positionDirty,
                     definitionDirty,
@@ -837,7 +837,7 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     MapIndicators.writeToStream(strm, definition!);
                 }
-            });
+            }, 2);
             flags |= UpdateFlags.MapIndicators;
         }
 
@@ -999,7 +999,7 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
 
         if ((flags & UpdateFlags.MapIndicators) !== 0) {
             data.mapIndicators = stream.readArray(() => {
-                const id = stream.readUint8();
+                const id = stream.readUint16();
                 const [
                     positionDirty,
                     definitionDirty,
@@ -1017,7 +1017,7 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
                 }
 
                 return { id, positionDirty, definitionDirty, dead, position, definition };
-            });
+            }, 2);
         }
 
         if ((flags & UpdateFlags.KillLeader) !== 0) {

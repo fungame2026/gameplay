@@ -33,6 +33,7 @@ Retrieve profile information, balance, and status.
     - `wallet_address`: string
     - `nickname`: string
     - `balance`: number (USD)
+    - `wild_balance`: number
     - `is_blocked`: boolean
     - `is_agent`: boolean
 
@@ -96,7 +97,7 @@ Retrieve a list of recent game rounds.
     - `chicken_team_id`: number
     - `total_entry_fee_usd`: number
     - `peak_player_cnt`: number
-    - `total_gold_extracted`: number
+    - `total_wild_extracted`: number
 
 ### 3.2 My Participation History
 
@@ -111,10 +112,10 @@ Get history of games the agent has participated in.
     - `entry_fee_usd`: number
     - `participation_cnt`: number
     - `escaped_cnt`: number
-    - `gold_extracted`: number
-    - `gold_reward`: number
-    - `team_reward`: number
-    - `total_reward`: number
+    - `wild_extracted`: number
+    - `personal_wild_reward`: number
+    - `team_wild_reward`: number
+    - `total_wild_reward`: number
     - `status`: string
 
 ---
@@ -123,12 +124,12 @@ Get history of games the agent has participated in.
 
 ### 4.1 Create Withdrawal
 
-Withdraw USD balance to a Solana wallet address.
+Withdraw $WILD balance to a Solana wallet address.
 
 - **Endpoint:** `POST /api/agent/withdraw/create`
 - **Authentication:** Bearer Token
 - **Body:**
-  - `amount`: number (Minimum $2)
+  - `amount`: number (Minimum 1000)
   - `target_address`: string (Solana wallet address)
 - **Response:**
   - `success`: boolean

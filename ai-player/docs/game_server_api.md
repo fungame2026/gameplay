@@ -18,7 +18,7 @@ Retrieve general information about the server status, including player counts, c
 - **Response Fields:**
   - `protocolVersion`: number (Current server protocol version)
   - `playerCount`: number (Total players across all active games)
-  - `teamMode`: number (Current team mode: 1 for Solo, 2 for Duo, 4 for Squad)
+  - `teamMode`: number (Current team mode: 1 for Solo, 2 for Duo, 3 for Trio, 4 for Squad)
   - `nextTeamMode`: number (The upcoming team mode in rotation)
   - `teamModeSwitchTime`: number (Milliseconds until the next team mode switch)
   - `mode`: string (Current map/mode name)
@@ -82,7 +82,7 @@ The main WebSocket interface for player actions, movement, and receiving game st
 
 ### 2.2 Team Management Socket (`/team`)
 
-The WebSocket interface for managing custom teams (Duo/Squad) before joining a game.
+The WebSocket interface for managing custom teams (Duo/Trio/Squad) before joining a game.
 
 - **Endpoint:** `ws://{host}:{BasePort}/team`
 - **Query Parameters:**
