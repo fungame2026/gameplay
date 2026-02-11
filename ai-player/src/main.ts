@@ -70,11 +70,7 @@ async function main() {
     const aiPlayer = new AIPlayer(serverAddress, playerName, null as any);
     await aiPlayer.start();
 
-    console.log(`AI Player ${playerName} started!`);
-    
-    // Keep the process running
-    process.stdin.resume();
-    return;
+    process.exit(0);
 }
 
 main()

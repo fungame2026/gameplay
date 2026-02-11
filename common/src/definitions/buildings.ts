@@ -12850,30 +12850,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
-        idString: "tavern_recording_puzzle",
-        name: "Tavern Recording Puzzle",
-        defType: DefinitionType.Building,
-        spawnHitbox: RectangleHitbox.fromRect(178.2, 147.94, Vec(2.31, -0.89)),
-        puzzle: { delay: 0 },
-        sounds: {
-            normal: "tavern_music",
-            solved: null,
-            position: Vec(17.25, 6.59),
-            falloff: 0.75,
-            maxRange: 150
-        },
-        obstacles: IS_CLIENT ? undefined : [
-            { idString: "tavern_recorder", position: Vec(6.77, -0.26), rotation: 0, puzzlePiece: true }
-        ]
-    },
-    {
         idString: "tavern",
         name: "Tavern",
         defType: DefinitionType.Building,
         material: "stone",
         particle: "cabin_wall_particle",
         collideWithLayers: Layers.Equal,
-        bunkerSpawnHitbox: RectangleHitbox.fromRect(106.29, 130.73, Vec(42.71, -53.34)),
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2.01, 52.82, Vec(-75.92, -26.65)),
             RectangleHitbox.fromRect(37.57, 2.01, Vec(-57.14, -52.06)),
@@ -12901,12 +12883,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(56.83, 19.14, Vec(3.1, 46.75)),
             RectangleHitbox.fromRect(23.56, 5.38, Vec(-12.95, 56.4))
         ),
-        puzzle: {
-            triggerOnSolve: "tavern_bottle_table",
-            delay: 2500,
-            solvedSound: true,
-            setSolvedImmediately: true
-        },
         floors: [
             {
                 type: FloorNames.Carpet,
@@ -12938,16 +12914,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(5, 11.72, Vec(-78.61, 32.56)),
                     RectangleHitbox.fromRect(10.86, 33.64, Vec(75.7, 22.55))
                 )
-            },
-            { // stair floor, at layer -1
-                type: FloorNames.Metal,
-                hitbox: RectangleHitbox.fromRect(12.47, 17.59, Vec(40.76, -4.55)),
-                layer: Layer.ToBasement
-            },
-            {
-                type: FloorNames.Metal,
-                hitbox: RectangleHitbox.fromRect(12.47, 17.59, Vec(40.76, -4.55)),
-                layer: Layer.Basement
             }
         ],
         floorImages: [
@@ -13022,8 +12988,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: IS_CLIENT ? undefined : [
             { idString: "tavern_bar_collider", position: Vec(0, 0), rotation: 0 },
             { idString: "tavern_table_collider", position: Vec(0, 0), rotation: 0 },
-            { idString: "tavern_basement_collider_hack", position: Vec(43.66, -53.7), rotation: 0, layer: Layer.ToBasement },
-            { idString: "tavern_stair", position: Vec(40.82, -5), rotation: 0, layer: Layer.ToBasement },
 
             { idString: "tavern_wall_1", position: Vec(-18.725, -32.3), rotation: 0 },
             { idString: "tavern_wall_2", position: Vec(-39.42, -41.21), rotation: 0 },
@@ -13114,170 +13078,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "sink2", position: Vec(-44.48, -46.31), rotation: 3 },
             { idString: "fireplace", position: Vec(-51.19, 33.42), rotation: 2 },
             { idString: "couch", position: Vec(-50.82, 5.93), rotation: 3 },
-            { idString: "gun_mount_ak47", position: Vec(-14.35, -29.45), rotation: 0 },
-            { idString: "tavern_bottle_table", position: Vec(29.95, 11.85), rotation: 1 }
+            { idString: "gun_mount_ak47", position: Vec(-14.35, -29.45), rotation: 0 }
         ],
-        subBuildings: IS_CLIENT ? undefined : [
-            { idString: "tavern_secret_ceiling", position: Vec(39.85, 3.2) },
-            { idString: "tavern_basement", position: Vec(43.66, -53.7), layer: Layer.Basement },
-            { idString: "tavern_recording_puzzle", position: Vec(0, 0) }
-        ],
+        subBuildings: undefined,
         lootSpawners: IS_CLIENT ? undefined : [{ table: "ground_loot", position: Vec(-14.99, 48.38) }]
-    },
-    {
-        idString: "tavern_secret_ceiling",
-        name: "Tavern Secret Ceiling",
-        defType: DefinitionType.Building,
-        ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
-        ceilingHiddenAlpha: 0.45,
-        spawnHitbox: RectangleHitbox.fromRect(19.39, 40.15, Vec(0.24, -0.09)),
-        ceilingHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(12.5, 24.01, Vec(0.97, -4.62)),
-            RectangleHitbox.fromRect(14.45, 15.77, Vec(0, 8.73))
-        ),
-        ceilingImages: [{
-            key: "tavern_secret_ceiling",
-            position: Vec(0, 0),
-            scale: Vec(4.05, 4.05)
-        }]
-    },
-    {
-        idString: "tavern_basement",
-        name: "Tavern Basement",
-        defType: DefinitionType.Building,
-        material: "metal_heavy",
-        particle: "bunker_particle",
-        reflectBullets: true,
-        collideWithLayers: Layers.Equal,
-        hitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(2.06, 19.23, Vec(4.33, 49.24)),
-            RectangleHitbox.fromRect(2.06, 19.23, Vec(-10.2, 49.25)),
-            RectangleHitbox.fromRect(91.13, 2.01, Vec(-0.13, 58.77)),
-            RectangleHitbox.fromRect(2, 83.14, Vec(45.35, 18.21)),
-            RectangleHitbox.fromRect(25.08, 38.7, Vec(33.84, -40.55)),
-            RectangleHitbox.fromRect(23.86, 38.53, Vec(-34.44, -40.5)),
-            RectangleHitbox.fromRect(2, 82.57, Vec(-45.35, 18.49)),
-            RectangleHitbox.fromRect(11.1, 2.02, Vec(15.77, -22.23)),
-            RectangleHitbox.fromRect(11.1, 2.02, Vec(-17.01, -22.23)),
-            RectangleHitbox.fromRect(44.87, 2.02, Vec(-0.29, -58.78))
-        ),
-        spawnHitbox: RectangleHitbox.fromRect(106.29, 130.73, Vec(-0.95, 0.37)),
-        ceilingHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(88.75, 79.01, Vec(0.01, 18.28)),
-            RectangleHitbox.fromRect(43.87, 38.85, Vec(-0.6, -38.38))
-        ),
-        puzzle: {
-            triggerOnSolve: "bulletproof_automatic_glass_door",
-            delay: 500
-        },
-        floors: [
-            {
-                type: FloorNames.Wood,
-                hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(39.12, 79.07, Vec(24.86, 18.26)),
-                    RectangleHitbox.fromRect(33.3, 79.19, Vec(-27.72, 18.2)),
-                    RectangleHitbox.fromRect(23.83, 63.4, Vec(-1.5, 8.49))
-                )
-            },
-            {
-                type: FloorNames.Stone,
-                hitbox: RectangleHitbox.fromRect(43.87, 36.23, Vec(-0.6, -39.69))
-            }
-        ],
-        floorImages: [
-            {
-                key: "tavern_basement_floor_1",
-                position: Vec(-0.02, 18.33)
-            },
-            {
-                key: "tavern_basement_floor_2",
-                position: Vec(-0.7, -41),
-                scale: Vec(2, 2)
-            },
-            {
-                key: "regular_crate_residue",
-                position: Vec(17.45, -53.97)
-            }
-        ],
-        obstacles: IS_CLIENT ? undefined : [
-            { idString: "tavern_basement_table_colliders", position: Vec(0, 0), rotation: 0 },
-
-            { idString: "bulletproof_automatic_glass_door", position: Vec(-6.03, -22.36), rotation: 0 },
-            { idString: "bulletproof_automatic_glass_door", position: Vec(4.76, -22.36), rotation: 2 },
-
-            { idString: "tavern_wall_7", position: Vec(-37.7, -2.09), rotation: 0 },
-            { idString: "tavern_wall_7", position: Vec(-37.7, 22.32), rotation: 0 },
-            { idString: "tavern_wall_8", position: Vec(-32.81, 40.42), rotation: 0 },
-
-            { idString: "wine_barrel", position: Vec(39.05, -4.78) },
-            { idString: "wine_barrel", position: Vec(39.14, 25.79) },
-            { idString: "wine_barrel", position: Vec(39.21, 34.81) },
-            { idString: "wine_barrel", position: Vec(13.04, 20.53) },
-            { idString: "wine_barrel", position: Vec(5.3, 23.01) },
-            { idString: "wine_barrel", position: Vec(-33.42, 34.95) },
-            { idString: "wine_barrel", position: Vec(-39.11, 27.66) },
-            { idString: "wine_barrel", position: Vec(-31.77, 3.85) },
-
-            { idString: "box", position: Vec(-1.07, 2.01) },
-            { idString: "box", position: Vec(-40.76, 35.3) }, // huh
-            { idString: "box", position: Vec(30.72, 53.61) },
-            { idString: "box", position: Vec(39.97, 15.15) },
-            { idString: "box", position: Vec(16.04, -26.31) },
-            { idString: "box", position: Vec(17.43, -31.63) },
-
-            { idString: "tavern_column", position: Vec(-29.66, 22.3) },
-            { idString: "tavern_column", position: Vec(-29.66, -2.12) },
-
-            { idString: "small_drawer", position: Vec(-39.49, 45.81), rotation: 1 },
-            { idString: "small_drawer", position: Vec(-40.16, 4.08), rotation: 0 },
-
-            { idString: "chair", position: Vec(18.63, 51.74), rotation: 1 },
-            { idString: "chair", position: Vec(12.36, 46.92), rotation: 2 },
-
-            { idString: "trash_can", position: Vec(-19.29, -54.61) },
-            { idString: "trash_can", position: Vec(-14.11, 54.64) },
-
-            { idString: "lamp", position: Vec(19.84, -41.61), rotation: 1, variation: 2 },
-            { idString: "lamp", position: Vec(-21.15, -41.46), rotation: 3, variation: 2 },
-
-            { idString: "small_table", position: Vec(12.36, 51.59), rotation: 1, variation: 2 },
-            { idString: "large_drawer", position: Vec(-39.7, -12.17), rotation: 1 },
-            { idString: "small_bed", position: Vec(-35.84, 53.63), rotation: 1 },
-            { idString: "nsd_crate", position: Vec(38.03, 6.64) },
-            { idString: "regular_crate", position: Vec(38.55, 51.38) },
-            { idString: "regular_crate", position: Vec(-17.5, -28.18) },
-            { idString: "button", position: Vec(-14.73, -20.5), rotation: 0, variation: 0, puzzlePiece: true },
-            { idString: "potted_plant", position: Vec(19.68, -17.44), rotation: 0 },
-            { idString: "door", position: Vec(-16.75, 40.32), rotation: 2 },
-            { idString: "rare_wine_case", position: Vec(-0.73, -41.54), rotation: 0 },
-            {
-                idString: {
-                    gun_mount_rpk16: 0.3,
-                    gun_mount_an94: 0.2,
-                    gun_mount_stoner_63: 0.5
-                },
-                position: Vec(-0.73, -56.17),
-                lootSpawnOffset: Vec(0, 5),
-                rotation: 0
-            }
-        ],
-        subBuildings: IS_CLIENT ? undefined : [{
-            idString: "tavern_basement_vault_ceiling",
-            position: Vec(-0.55, -40.6)
-        }]
-    },
-    {
-        idString: "tavern_basement_vault_ceiling",
-        name: "Tavern Basement Vault Ceiling",
-        defType: DefinitionType.Building,
-        ceilingHiddenAlpha: 0.5,
-        spawnHitbox: RectangleHitbox.fromRect(50.85, 43.97),
-        ceilingHitbox: RectangleHitbox.fromRect(43.81, 34.55),
-        ceilingImages: [{
-            key: "tavern_basement_vault_ceiling",
-            position: Vec(0, 0),
-            scale: Vec(4.05, 4.075)
-        }]
     },
     {
         idString: "docks",

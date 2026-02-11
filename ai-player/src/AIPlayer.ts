@@ -137,6 +137,7 @@ export class AIPlayer {
     private lastCheckPosition: Vector | null = null;
     private lastCheckPositionTime: number = 0;
     private unstuckUntil: number = 0;
+    private deadlockTimestamps: number[] = [];
     
     // Loot locking to prevent jitter
     private lockedLootTargetId: number | null = null;
@@ -145,26 +146,30 @@ export class AIPlayer {
     private visitedPositions: { pos: Vector, time: number }[] = [];
 
     public async start() {
-        const configPath = this.configPath 
-            ? path.resolve(process.cwd(), this.configPath)
-            : path.resolve(process.cwd(), 'data/config.json');
+        if (!this.apiKey) {
+            const configPath = this.configPath 
+                ? path.resolve(process.cwd(), this.configPath)
+                : path.resolve(process.cwd(), 'data/config.json');
 
-        if (!fs.existsSync(configPath)) {
-            console.error('Config file not found at', configPath);
-            process.exit(1);
-        }
+            if (!fs.existsSync(configPath)) {
+                console.error('Config file not found at', configPath);
+                process.exit(1);
+            }
 
-        const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-        if (!config.api_key) {
-            console.error('API key not found in config file');
-            process.exit(1);
-        }
+            const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+            if (!config.api_key) {
+                console.error('API key not found in config file');
+                process.exit(1);
+            }
 
-        this.apiKey = config.api_key;
-        if (config.nickname) {
-            this.playerName = config.nickname;
+            this.apiKey = config.api_key;
+            if (config.nickname) {
+                this.playerName = config.nickname;
+            }
+            console.log('API key loaded successfully');
+        } else {
+            console.log('Using pre-set API key');
         }
-        console.log('API key loaded successfully');
 
         this.networkManager.connect(this.serverAddress);
         await this.runGameLoop();
@@ -189,20 +194,31 @@ export class AIPlayer {
                 continue;
             }
 
-            // 1. Evaluate environment and add/update desires
-            this.desireManager.evaluateDesires();
+            //console.log("isForceStop: ", this.isForceStop);
+            try {
+                if (this.isLocationDeadLock()) {
+                    this.isForceStop = false;
+                    this.ensureWanderTarget();
+                    this.UpdateMovement();
+                    continue;
+                }
 
-            // 2. Process the highest priority desire
-            if (this.desires.length > 0) {
-                await this.desireManager.processDesires();
-            } else {
-                // Idle / Wander if no desires
-                // Ensure we aren't force stopped from a previous action
-                this.isForceStop = false;
-                this.ensureWanderTarget();
-                this.UpdateMovement();
+                // 1. Evaluate environment and add/update desires
+                this.desireManager.evaluateDesires();
+
+                // 2. Process the highest priority desire
+                if (this.desires.length > 0) {
+                    await this.desireManager.processDesires();
+                } else {
+                    // Idle / Wander if no desires
+                    // Ensure we aren't force stopped from a previous action
+                    this.isForceStop = false;
+                    this.ensureWanderTarget();
+                    this.UpdateMovement();
+                }
+            } catch (error) {
+                console.error("Error in runGameLoop:", error);
             }
-
             await delay(50);
         }
     }
@@ -617,11 +633,11 @@ export class AIPlayer {
 
         // If we are healing, we are intentionally stationary.
         // Update the timer and position to prevent false deadlock detection.
-        if (this.combatManager.healingState !== 'none') {
-            this.lastCheckPosition = { ...this.playerPosition };
-            this.lastCheckPositionTime = now;
-            return false;
-        }
+        //if (this.combatManager.healingState !== 'none') {
+        //    this.lastCheckPosition = { ...this.playerPosition };
+        //    this.lastCheckPositionTime = now;
+        //    return false;
+        //}
 
         if (!this.lastCheckPosition) {
             this.lastCheckPosition = { ...this.playerPosition };
@@ -631,7 +647,7 @@ export class AIPlayer {
 
         const dist = Geometry.distance(this.playerPosition, this.lastCheckPosition);
 
-        if (dist > 2.0) {
+        if (dist > 5.0) {
             // We moved! Reset.
             this.lastCheckPosition = { ...this.playerPosition };
             this.lastCheckPositionTime = now;
@@ -641,9 +657,20 @@ export class AIPlayer {
         // We haven't moved far since lastCheckPositionTime
         if (now - this.lastCheckPositionTime > 10000) {
             // Stuck for 10 seconds
-            console.warn(`Deadlock detected! Stuck at ${this.playerPosition.x.toFixed(1)},${this.playerPosition.y.toFixed(1)} for 5s.`);
+            console.warn(`Deadlock detected! Stuck at ${this.playerPosition.x.toFixed(1)},${this.playerPosition.y.toFixed(1)} for 10s.`);
+            
+            this.deadlockTimestamps.push(now);
+            // Only keep deadlocks from the last 40 seconds
+            this.deadlockTimestamps = this.deadlockTimestamps.filter(t => now - t <= 40000);
+            
+            if (this.deadlockTimestamps.length >= 2) {
+                console.error(`Multiple deadlocks detected (${this.deadlockTimestamps.length}) within 40 seconds. Exiting...`);
+                process.exit(1);
+            }
+
             this.lastCheckPositionTime = now; // Reset to avoid spamming
             this.lastCheckPosition = { ...this.playerPosition }; // Reset position anchor
+            this.desires = [];
             return true;
         }
 

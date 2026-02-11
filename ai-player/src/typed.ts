@@ -46,18 +46,36 @@ export interface ConfigType {
 }
 
 /* eslint-disable @stylistic/indent */
-export type DesireType = 'pickupGun' | 'pickupMelee' | 'pickupThrowable' | 'pickupLoot' | 'killEnemy' | 'avoidGas' | 'avoidGrenade' | 'moveToLocation' | 'reviveTeammate' | 'heal' | 'reload';
+export type DesireType = 'pickupGun' | 'pickupMelee' | 'pickupThrowable' | 'pickupLoot' | 'killEnemy' | 'avoidGas' | 'avoidGrenade' | 'moveToLocation' | 'reviveTeammate' | 'heal' | 'reload' | 'escape' | 'COMMAND_SUPPORT' | 'COMMAND_COVER' | 'COMMAND_RALLY' | 'COMMAND_FOCUS_FIRE' | 'COMMAND_HUNT';
 
 export interface Desire {
     type: DesireType;
     targetName: string | null;
     targetPosition: Vector;
     targetId?: number;
-    targetSlot?: number; // For pickupGun
+    targetSlot?: number; // For pickupGun or reload
     isResolved: boolean;
     status: 'pending' | 'doing';
     priority: number; // 0 is highest
     creationTime: number;
+}
+
+export interface CommanderData {
+    gameUuid: string;
+    teamId: number;
+    playerId: number;
+    position: Vector;
+    health: number;
+    adrenaline: number;
+    isUnderAttack: boolean;
+    isInGas: boolean;
+    nearbyEnemies: Array<{ id: number, position: Vector, health: number }>;
+    nearbyTeammates: Array<{ id: number, position: Vector }>;
+    weapons: Array<{ slot: number, id: string, ammo: number, capacity: number }>;
+    meds: Record<string, number>;
+    currentDesire: DesireType;
+    isExtracting: boolean;
+    hasExtractionPlan: boolean;
 }
 
 export type ObjectClassMapping = {

@@ -85,7 +85,7 @@ export class DesireManager {
                     const dist = Geometry.distance(this.ai.playerPosition, building.position);
                     if (goldCount < MIN_GOLD_FOR_EVACUATION) {
                         // Avoid winner gate if too close
-                        if (dist < 25) {
+                        if (dist < 20) {
                             const dx = this.ai.playerPosition.x - building.position.x;
                             const dy = this.ai.playerPosition.y - building.position.y;
                             const angle = Math.atan2(dy, dx);
@@ -106,12 +106,12 @@ export class DesireManager {
                     } else {
                         // Move to winner gate to evacuate if gold is enough
                         this.addDesire({
-                            type: 'moveToLocation',
+                            type: 'escape',
                             targetName: 'Evacuate',
                             targetPosition: building.position,
                             isResolved: false,
                             status: 'pending',
-                            priority: 0.5,
+                            priority: 3,
                             creationTime: now
                         });
                     }
@@ -255,7 +255,9 @@ export class DesireManager {
             const distB = Geometry.distance(this.ai.playerPosition, b.targetPosition);
             return distA - distB;
         });
-
+        //for (let idx = 0; idx < this.ai.desires.length && idx < 5; ++idx) {
+        //    console.log(`idx: ${idx} desire: ${JSON.stringify(this.ai.desires[idx])}`)
+        //}
         const currentDesire = this.ai.desires[0];
         currentDesire.status = 'doing';
 
@@ -292,6 +294,9 @@ export class DesireManager {
                 break;
             case 'moveToLocation':
                 await this.handleMoveToLocation(currentDesire);
+                break;
+            case 'escape':
+                await this.handleEscape(currentDesire);
                 break;
         }
 
@@ -395,6 +400,18 @@ export class DesireManager {
         const dist = Geometry.distance(this.ai.playerPosition, desire.targetPosition);
         if (dist < 5) {
             desire.isResolved = true; // Mark as done so we can remove it
+        }
+    }
+
+    private async handleEscape(desire: Desire): Promise<void> {
+        this.ai.isForceStop = false;
+        this.ai.targetPosition = desire.targetPosition;
+        this.ai.UpdateMovement();
+        
+        // Check if we arrived
+        const dist = Geometry.distance(this.ai.playerPosition, desire.targetPosition);
+        if (dist < 5) {
+            desire.isResolved = true;
         }
     }
 }

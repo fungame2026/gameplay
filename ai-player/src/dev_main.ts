@@ -43,12 +43,7 @@ async function main() {
     const playerName = `AI_Player_${Math.floor(Math.random() * 1000)}`;
     const aiPlayer = new AIPlayer(serverAddress, playerName, configPath);
     await aiPlayer.start();
-
-    console.log(`AI Player ${playerName} started!`);
-    
-    // Keep the process running
-    process.stdin.resume();
-    return;
+    process.exit(0);
 }
 
 main()

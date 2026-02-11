@@ -15,6 +15,7 @@ import { InputPacket } from "@common/packets/inputPacket";
 import { HealingItems } from "@common/definitions/items/healingItems";
 import { Explosions } from "@common/definitions/explosions";
 import { Projectile } from "../objects/projectile";
+import { MIN_GOLD_FOR_EVACUATION } from "../constant";
 
 export class LootManager {
     constructor(private ai: AIPlayer) {}
@@ -289,11 +290,26 @@ export class LootManager {
         const marginX = this.ai.gameMap.width * 0.05;
         const marginY = this.ai.gameMap.height * 0.05;
 
+        const goldCount = this.ai.getGoldCount();
+        let winnerGate: any = null;
+        if (goldCount < MIN_GOLD_FOR_EVACUATION) {
+            for (const obj of this.ai.objects) {
+                if (obj.type === ObjectCategory.Building && (obj as any).definition?.idString === "winner_gate") {
+                    winnerGate = obj;
+                    break;
+                }
+            }
+        }
+
         for (const obj of this.ai.objects) {
             if (obj instanceof (ObjectClassMapping[ObjectCategory.Loot] as any)) {
                 const loot = obj as InstanceType<typeof ObjectClassMapping[ObjectCategory.Loot]>;
                 
                 if (this.ai.lootedItems.has(loot.id)) continue;
+
+                if (winnerGate && Geometry.distance(loot.position, winnerGate.position) < 50) {
+                    continue;
+                }
 
                 let inIgnoreZone = false;
                 for (const zone of this.ai.ignoredLootZones) {
@@ -356,6 +372,18 @@ export class LootManager {
     public isLootDesireStillValid(desire: Desire, loot: Loot): boolean {
         if (!loot || loot.destroyed || !this.ai.objects.hasId(loot.id)) {
             return false;
+        }
+
+        const goldCount = this.ai.getGoldCount();
+        if (goldCount < MIN_GOLD_FOR_EVACUATION) {
+            for (const obj of this.ai.objects) {
+                if (obj.type === ObjectCategory.Building && (obj as any).definition?.idString === "winner_gate") {
+                    if (Geometry.distance(loot.position, obj.position) < 20) {
+                        return false;
+                    }
+                    break;
+                }
+            }
         }
 
         const def = loot.definition;
@@ -516,6 +544,7 @@ export class LootManager {
                 return true;
 
             case 'moveToLocation':
+            case 'escape':
                 return Geometry.distance(this.ai.playerPosition, desire.targetPosition) < 5;
         }
         return false;
