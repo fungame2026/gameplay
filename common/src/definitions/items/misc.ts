@@ -7,7 +7,7 @@ export interface GoldDefinition extends ItemDefinition {
 export const Miscs = new ObjectDefinitions<GoldDefinition>([
     {
         idString: "gold",
-        name: "WILD",
+        name: "GOLD",
         defType: DefinitionType.Gold,
         noDrop: true,
         mapIndicator: "gold"
