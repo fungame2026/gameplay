@@ -14,15 +14,15 @@ export const Config = {
         na: {
             name: "North America",
             flag: "🏆 ",
-            mainAddress: "https://us.sowild.fun",
-            gameAddress: "wss://us.sowild.fun/game/<gameID>",
+            mainAddress: "https://us.lobmoney.org",
+            gameAddress: "wss://us.lobmoney.org/game/<gameID>",
             offset: 9187
         },
         as: {
             name: "Asia",
             flag: "🇻🇳 ",
-            mainAddress: "https://as.sowild.fun",
-            gameAddress: "wss://as.sowild.fun/game/<gameID>",
+            mainAddress: "https://as.lobmoney.org",
+            gameAddress: "wss://as.lobmoney.org/game/<gameID>",
             offset: 9187
         },
     }

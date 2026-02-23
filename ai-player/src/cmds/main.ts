@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-const HOST_URL = 'https://sowild.fun';
+const HOST_URL = 'https://lobmoney.org';
 const CONFIG_PATH = path.resolve(process.cwd(), 'data/config.json');
 
 interface Config {
