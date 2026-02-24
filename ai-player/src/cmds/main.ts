@@ -53,7 +53,7 @@ async function apiRequest(endpoint: string, method: string = 'GET', body?: any, 
         const response = await fetch(url, options);
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.message || `HTTP error! status: ${response.status}`);
+            throw new Error(data.message || `HTTP error! status: ${response.status}, response: ${JSON.stringify(response)}`);
         }
         return data;
     } catch (error: any) {
